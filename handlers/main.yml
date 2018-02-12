@@ -1,0 +1,11 @@
+---
+# handlers file for golem-source
+
+- name: restart golem
+  systemd:
+    daemon_reload: yes
+    name: "{{ golem_source_unit_name }}"
+    state: restarted
+  become: yes
+  listen:
+    - geth updated

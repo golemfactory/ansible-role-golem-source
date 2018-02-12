@@ -1,0 +1,26 @@
+galaxy_info:
+  author: Karol Tomala
+  description: Golem Node from source (development version)
+  company: Golem Factory GmbH
+  license: BSD
+  min_ansible_version: 2.4
+
+  platforms:
+  - name: Ubuntu
+    versions:
+    - 16.04
+
+  galaxy_tags:
+    - golem
+    - golem-compute
+    - golem_compute
+    - golem-source
+    - golem_source
+    - source
+    - development
+    - develop
+
+dependencies:
+  - { role: golem-docker }
+  - { role: golem-ethereum }
+  - { role: golem-hyperdrive }

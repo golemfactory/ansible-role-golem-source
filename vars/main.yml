@@ -1,0 +1,5 @@
+---
+# vars file for golem-source
+
+golem_source_config_default:
+  "node name": "{{ inventory_hostname }} git"

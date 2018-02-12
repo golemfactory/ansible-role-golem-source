@@ -1,0 +1,13 @@
+---
+# defaults file for golem-source
+
+golem_source_config: {}
+golem_source_config_path: "{{ golem_source_user_home }}/.local/share/golem/git"
+golem_source_path: "{{ golem_source_user_home }}"
+golem_source_reinstall: False
+golem_source_unit_extra_args: ""
+golem_source_unit_name: golem_git
+golem_source_user: golem
+golem_source_user_group: golem
+golem_source_user_home: "/var/lib/{{ golem_source_user }}"
+golem_source_version: develop

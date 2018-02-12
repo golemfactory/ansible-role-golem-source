@@ -1,0 +1,129 @@
+---
+# tasks file for golem-source
+
+- name: create group
+  become: yes
+  group:
+    name: "{{ golem_source_user_group }}"
+    system: yes
+    state: present
+
+- name: create golem user
+  become: yes
+  user:
+    name: "{{ golem_source_user }}"
+    home: "{{ golem_source_user_home }}"
+    system: yes
+    group: "{{ golem_source_user_group }}"
+    groups: docker
+    append: yes
+    state: present
+
+- name: stop
+  when: golem_source_reinstall
+  become: yes
+  systemd:
+    name: "{{ golem_source_unit_name }}"
+    state: stopped
+
+- name: cleanup
+  when: golem_source_reinstall
+  become: yes
+  file:
+    path: "{{ golem_source_path }}/golem_git"
+    state: absent
+
+- name: cleanup config
+  when: golem_source_reinstall
+  become: yes
+  file:
+    path: "{{ golem_source_config_path }}"
+    state: absent
+
+- name: create directory for golem
+  become: yes
+  file:
+    path: "{{ golem_source_path }}"
+    state: directory
+    owner: "{{ golem_source_user }}"
+    group: "{{ golem_source_user_group }}"
+
+- name: clone git source
+  become: yes
+  git:
+    repo: "https://github.com/golemfactory/golem.git"
+    dest: "{{ golem_source_path }}/golem_git"
+    version: "{{ golem_source_version }}"
+
+- name: install dependencies
+  become: yes
+  apt:
+    update_cache: yes
+    name: "{{ item }}"
+  with_items:
+    - libffi-dev
+    - libssl-dev
+    - python3-pip
+    - virtualenv
+
+- name: upgrade pip
+  become: yes
+  pip:
+    name: pip
+    state: latest
+    virtualenv: "{{ golem_source_path }}/golem_git/venv"
+
+- name: pip install requirements
+  become: yes
+  pip:
+    requirements: "{{ golem_source_path }}/golem_git/requirements.txt"
+    virtualenv: "{{ golem_source_path }}/golem_git/venv"
+
+- name: set version
+  become: yes
+  command: ./venv/bin/python3 -c "from setup_util.setup_commons import get_version; get_version()"
+  args:
+    chdir: "{{ golem_source_path }}/golem_git/"
+
+- name: create directory for golem config
+  become: yes
+  file:
+    path: "{{ golem_source_config_path }}"
+    state: directory
+    owner: "{{ golem_source_user }}"
+    group: "{{ golem_source_user_group }}"
+
+- name: create bare config file
+  become: yes
+  copy:
+    content: |
+      [Node]
+    dest: "{{ golem_source_config_path }}/app_cfg.ini"
+    force: no
+    owner: "{{ golem_source_user }}"
+    group: "{{ golem_source_user_group }}"
+
+- name: configure golem
+  become: yes
+  with_dict: "{{ golem_source_config_default | default({}) | combine(golem_source_config) }}"
+  lineinfile:
+    path: "{{ golem_source_config_path }}/app_cfg.ini"
+    state: present
+    regexp: "^{{ item.key }} = "
+    line: "{{ item.key }} = {{ item.value }}"
+  notify: restart golem
+
+- name: create systemd unit
+  become: yes
+  template:
+    src: golem.service.j2
+    dest: "/etc/systemd/system/{{ golem_source_unit_name }}.service"
+  notify: restart golem
+
+- name: start golem
+  become: yes
+  systemd:
+    daemon_reload: yes
+    name: "{{ golem_source_unit_name }}"
+    state: started
+    enabled: yes
