@@ -55,16 +55,33 @@
     dest: "{{ golem_source_path }}/golem_git"
     version: "{{ golem_source_version }}"
 
+- name: Add python 3.6 repository apt key
+  apt_key:
+    keyserver: keyserver.ubuntu.com
+    id: 4ab0f789cba31744cc7da76a8cf63ad3f06fc659
+  become: yes
+- name: Add python 3.6 repo
+  apt_repository:
+    repo: "ppa:jonathonf/python-3.6"
+    update_cache: yes
+  become: yes
 - name: install dependencies
   become: yes
   apt:
     update_cache: yes
     name: "{{ item }}"
   with_items:
+    - python3.6
+    - python3.6-venv
+    - python3.6-dev
     - libffi-dev
     - libssl-dev
-    - python3-pip
     - virtualenv
+    - build-essential
+    - automake
+    - pkg-config
+    - libtool
+    - libgmp-dev
 
 - name: upgrade pip
   become: yes
@@ -72,12 +89,14 @@
     name: pip
     state: latest
     virtualenv: "{{ golem_source_path }}/golem_git/venv"
+    virtualenv_command: /usr/bin/python3.6 -m venv
 
 - name: pip install requirements
   become: yes
   pip:
     requirements: "{{ golem_source_path }}/golem_git/requirements.txt"
     virtualenv: "{{ golem_source_path }}/golem_git/venv"
+    virtualenv_command: /usr/bin/python3.6 -m venv
 
 - name: set version
   become: yes
