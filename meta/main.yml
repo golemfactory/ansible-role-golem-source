@@ -22,5 +22,4 @@ galaxy_info:
 
 dependencies:
   - { role: golemfactory.golem-docker }
-  - { role: golemfactory.golem-ethereum }
   - { role: golemfactory.golem-hyperdrive }
