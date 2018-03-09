@@ -9,5 +9,5 @@ golem_source_unit_extra_args: ""
 golem_source_unit_name: golem_git
 golem_source_user: golem
 golem_source_user_group: golem
-golem_source_user_home: "/var/lib/{{ golem_source_user }}"
+golem_source_user_home: "/home/{{ golem_source_user }}"
 golem_source_version: develop
