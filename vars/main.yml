@@ -3,3 +3,5 @@
 
 golem_source_config_default:
   "node name": "{{ inventory_hostname }} git"
+# FIXME: This has to be changed for mainnet
+golem_source_config_path: "{{ golem_source_config_dir }}/rinkeby"

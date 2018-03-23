@@ -5,7 +5,7 @@ After=network.target hyperdrive.service
 [Service]
 Type=simple
 User={{ golem_source_user }}
-ExecStart={{ golem_source_path }}/golem_git/venv/bin/python {{ golem_source_path }}/golem_git/golemapp.py -d {{ golem_source_config_path }} {{ golem_source_unit_extra_args }}
+ExecStart={{ golem_source_path }}/golem_git/venv/bin/python {{ golem_source_path }}/golem_git/golemapp.py -d {{ golem_source_config_dir }} {{ golem_source_unit_extra_args }}
 WorkingDirectory={{ golem_source_path }}/golem_git/
 Environment="LC_ALL=C.UTF-8"
 Environment="LANG=C.UTF-8"
