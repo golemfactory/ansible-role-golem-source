@@ -114,6 +114,14 @@
     owner: "{{ golem_source_user }}"
     group: "{{ golem_source_user_group }}"
 
+- name: create directory for golem config path
+  become: yes
+  file:
+    path: "{{ golem_source_config_path }}"
+    state: directory
+    owner: "{{ golem_source_user }}"
+    group: "{{ golem_source_user_group }}"
+
 - name: create bare config file
   become: yes
   copy:
