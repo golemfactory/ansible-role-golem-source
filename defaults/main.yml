@@ -2,7 +2,6 @@
 # defaults file for golem-source
 
 golem_source_config: {}
-# FIXME: This should include rinkeby subdir only with testnet parameter
 golem_source_config_dir: "{{ golem_source_user_home }}/.local/share/golem/git"
 golem_source_path: "{{ golem_source_user_home }}"
 golem_source_reinstall: False
