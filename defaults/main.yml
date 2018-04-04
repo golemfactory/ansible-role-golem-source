@@ -11,3 +11,4 @@ golem_source_user: golem
 golem_source_user_group: golem
 golem_source_user_home: "/home/{{ golem_source_user }}"
 golem_source_version: develop
+golem_source_keystore_backup_path: "/backup_golem"
