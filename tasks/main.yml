@@ -74,11 +74,88 @@
     group: "{{ golem_source_user_group }}"
 
 - name: clone git source
+  when: not golem_source_use_local_clone
   become: yes
   git:
-    repo: "https://github.com/golemfactory/golem.git"
+    repo: "{{ golem_source_repo }}"
     dest: "{{ golem_source_path }}/golem_git"
     version: "{{ golem_source_version }}"
+  notify: restart golem
+
+- name: clone git source
+  when: golem_source_use_local_clone
+  block:
+    - name: make a temporary directory for local repo clone
+      local_action:
+        module: tempfile
+        state: directory
+        suffix: "_golem_repo"
+      register: golem_source_local_repo_path
+      run_once: yes
+      check_mode: no
+
+    - name: clone git source
+      local_action:
+        module: git
+        repo: "{{ golem_source_repo }}"
+        dest: "{{ golem_source_local_repo_path.path }}/golem_git"
+        version: "{{ golem_source_version }}"
+      run_once: yes
+      check_mode: no
+
+    - name: create git bundle
+      local_action:
+        module: shell git bundle create ../golem.bundle {{ golem_source_version|quote }} $(git describe --tags --abbrev=0) --
+        args:
+          chdir: "{{ golem_source_local_repo_path.path }}/golem_git"
+      run_once: yes
+      check_mode: no
+
+    - name: transfer bundle to remote
+      become: yes
+      copy:
+        src: "{{ golem_source_local_repo_path.path }}/golem.bundle"
+        dest: "{{ golem_source_path }}/golem.bundle"
+      check_mode: no
+
+    - name: print a warning
+      debug:
+        msg: "If the next step fails, read the comment in tasks/main.yml"
+      run_once: yes
+
+    # This unfortunately doesn't work. Ansible modifies remote url, so that
+    # it starts with "file://" and that doesn't work with bundles.
+    # https://github.com/ansible/ansible/issues/39855
+    #
+    # workaround:
+    # from file site-packages/ansible/modules/source_control/git.py
+    # remove lines:
+    #     if repo.startswith('/'):
+    #         repo = 'file://' + repo
+    - name: clone git source from bundle
+      become: yes
+      git:
+        repo: "{{ golem_source_path }}/golem.bundle"
+        dest: "{{ golem_source_path }}/golem_git"
+        version: "{{ golem_source_version }}"
+      notify: restart golem
+
+  always:
+    - name: delete temporary directory with local repo clone
+      when: golem_source_local_repo_path is defined
+      local_action:
+        module: file
+        path: "{{ golem_source_local_repo_path.path }}"
+        state: absent
+      run_once: yes
+      check_mode: no
+
+    - name: delete remote bundle file
+      become: yes
+      file:
+        path: "{{ golem_source_path }}/golem.bundle"
+        state: absent
+      check_mode: no
 
 - name: Add python 3.6 repository apt key
   apt_key:
