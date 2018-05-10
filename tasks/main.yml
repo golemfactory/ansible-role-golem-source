@@ -80,6 +80,7 @@
     repo: "{{ golem_source_repo }}"
     dest: "{{ golem_source_path }}/golem_git"
     version: "{{ golem_source_version }}"
+  register: golem_source_dest_git_repo
   notify: restart golem
 
 - name: clone git source
@@ -93,6 +94,7 @@
       register: golem_source_local_repo_path
       run_once: yes
       check_mode: no
+      changed_when: False
 
     - name: clone git source
       local_action:
@@ -102,6 +104,7 @@
         version: "{{ golem_source_version }}"
       run_once: yes
       check_mode: no
+      changed_when: False
 
     - name: create git bundle
       local_action:
@@ -110,6 +113,7 @@
           chdir: "{{ golem_source_local_repo_path.path }}/golem_git"
       run_once: yes
       check_mode: no
+      changed_when: False
 
     - name: transfer bundle to remote
       become: yes
@@ -117,6 +121,7 @@
         src: "{{ golem_source_local_repo_path.path }}/golem.bundle"
         dest: "{{ golem_source_path }}/golem.bundle"
       check_mode: no
+      changed_when: False
 
     - name: print a warning
       debug:
@@ -139,6 +144,7 @@
         dest: "{{ golem_source_path }}/golem_git"
         version: "{{ golem_source_version }}"
       notify: restart golem
+      register: golem_source_dest_git_repo
 
   always:
     - name: delete temporary directory with local repo clone
@@ -149,6 +155,7 @@
         state: absent
       run_once: yes
       check_mode: no
+      changed_when: False
 
     - name: delete remote bundle file
       become: yes
@@ -156,6 +163,7 @@
         path: "{{ golem_source_path }}/golem.bundle"
         state: absent
       check_mode: no
+      changed_when: False
 
 - name: Add python 3.6 repository apt key
   apt_key:
@@ -208,6 +216,7 @@
   command: ./venv/bin/python3 -c "from setup_util.setup_commons import get_version; get_version()"
   args:
     chdir: "{{ golem_source_path }}/golem_git/"
+  changed_when: golem_source_dest_git_repo is changed
 
 - name: create directory for golem config
   become: yes
