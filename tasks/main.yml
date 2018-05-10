@@ -74,11 +74,19 @@
     group: "{{ golem_source_user_group }}"
 
 - name: clone git source
+  when: not golem_source_use_local_clone
   become: yes
   git:
-    repo: "https://github.com/golemfactory/golem.git"
+    repo: "{{ golem_source_repo }}"
     dest: "{{ golem_source_path }}/golem_git"
     version: "{{ golem_source_version }}"
+  register: golem_source_dest_git_repo
+  notify: restart golem
+
+# this makes the file a bit shorter
+# and allows to not overwrite registered variables
+- include_tasks: use_local_clone.yml
+  when: golem_source_use_local_clone
 
 - name: Add python 3.6 repository apt key
   apt_key:
@@ -131,6 +139,7 @@
   command: ./venv/bin/python3 -c "from setup_util.setup_commons import get_version; get_version()"
   args:
     chdir: "{{ golem_source_path }}/golem_git/"
+  changed_when: golem_source_dest_git_repo is changed
 
 - name: create directory for golem config
   become: yes
