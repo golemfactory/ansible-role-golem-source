@@ -177,6 +177,13 @@
     line: "{{ item.key }} = {{ item.value }}"
   notify: restart golem
 
+- name: configure denied nodes
+  become: yes
+  template:
+    src: "deny.txt.j2"
+    dest: "{{ golem_source_config_path }}/deny.txt"
+  notify: restart golem
+
 - name: create systemd unit
   become: yes
   template:

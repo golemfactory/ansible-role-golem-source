@@ -3,6 +3,7 @@
 
 golem_source_config: {}
 golem_source_config_dir: "{{ golem_source_user_home }}/.local/share/golem/git"
+golem_source_deny_nodes: []
 golem_source_path: "{{ golem_source_user_home }}"
 golem_source_reinstall: False
 golem_source_repo: "https://github.com/golemfactory/golem.git"
