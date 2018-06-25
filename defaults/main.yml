@@ -7,7 +7,7 @@ golem_source_deny_nodes: []
 golem_source_path: "{{ golem_source_user_home }}"
 golem_source_reinstall: False
 golem_source_repo: "https://github.com/golemfactory/golem.git"
-golem_source_unit_extra_args: ""
+golem_source_unit_extra_args: "--accept-terms"
 golem_source_unit_name: golem_git
 golem_source_user: golem
 golem_source_user_group: golem
