@@ -34,7 +34,7 @@
       become: yes
       copy:
         src: "{{ golem_source_local_repo_path.path }}/golem.bundle"
-        dest: "{{ golem_source_path }}/golem.bundle"
+        dest: "{{ golem_source_user_home }}/golem.bundle"
       check_mode: no
       changed_when: False
 
@@ -55,8 +55,8 @@
     - name: clone git source from bundle
       become: yes
       git:
-        repo: "{{ golem_source_path }}/golem.bundle"
-        dest: "{{ golem_source_path }}/golem_git"
+        repo: "{{ golem_source_user_home }}/golem.bundle"
+        dest: "{{ golem_source_path }}"
         version: "{{ golem_source_version }}"
       notify: restart golem
       register: golem_source_dest_git_repo
@@ -75,7 +75,7 @@
     - name: delete remote bundle file
       become: yes
       file:
-        path: "{{ golem_source_path }}/golem.bundle"
+        path: "{{ golem_source_user_home }}/golem.bundle"
         state: absent
       check_mode: no
       changed_when: False
