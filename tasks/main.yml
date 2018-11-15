@@ -88,17 +88,19 @@
 - include_tasks: use_local_clone.yml
   when: golem_source_use_local_clone
 
-- name: Add python 3.6 repository apt key
-  apt_key:
-    keyserver: keyserver.ubuntu.com
-    id: 4ab0f789cba31744cc7da76a8cf63ad3f06fc659
-  become: yes
-
 - name: Add python 3.6 repo
-  apt_repository:
-    repo: "ppa:jonathonf/python-3.6"
-    update_cache: yes
+  when: ansible_distribution_version is version('18.04', '<')
   become: yes
+  block:
+    - name: Add python 3.6 repository apt key
+      apt_key:
+        keyserver: keyserver.ubuntu.com
+        id: 4ab0f789cba31744cc7da76a8cf63ad3f06fc659
+
+    - name: Add python 3.6 repo
+      apt_repository:
+        repo: "ppa:jonathonf/python-3.6"
+        update_cache: yes
 
 - name: install dependencies
   become: yes
