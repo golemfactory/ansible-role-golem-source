@@ -197,3 +197,19 @@
     name: "{{ golem_source_unit_name }}"
     state: started
     enabled: yes
+
+- name: configure resources
+  when: golem_source_resource_settings
+  block:
+    - name: waiting for golem to become ready
+      shell: "{{ golem_source_cli }} account info | grep Golem_ID | awk '{print $2}'"
+      changed_when: False
+      register: golem_source_node_id
+      until: golem_source_node_id.stdout != ""
+      # generating keys and downloading docker images might take a while
+      retries: 10
+      delay: 60
+
+    - name: configure resources
+      shell: "{{ golem_source_cli }} settings set {{ item.key }} {{ item.value }}"
+      loop: "{{ golem_source_resource_settings|dict2items }}"

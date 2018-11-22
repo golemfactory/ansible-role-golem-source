@@ -9,6 +9,7 @@ golem_source_path: "{{ golem_source_user_home }}/golem_git"
 golem_source_password: "password"
 golem_source_reinstall: False
 golem_source_repo: "https://github.com/golemfactory/golem.git"
+golem_source_resource_settings: {}
 golem_source_unit_extra_args: ""
 golem_source_unit_name: golem_git
 golem_source_user: golem
