@@ -55,7 +55,7 @@
   when: golem_source_reinstall
   become: yes
   file:
-    path: "{{ golem_source_path }}/golem_git"
+    path: "{{ golem_source_path }}"
     state: absent
 
 - name: cleanup config
@@ -78,7 +78,7 @@
   become: yes
   git:
     repo: "{{ golem_source_repo }}"
-    dest: "{{ golem_source_path }}/golem_git"
+    dest: "{{ golem_source_path }}"
     version: "{{ golem_source_version }}"
   register: golem_source_dest_git_repo
   notify: restart golem
@@ -125,21 +125,21 @@
   pip:
     name: pip
     state: latest
-    virtualenv: "{{ golem_source_path }}/golem_git/venv"
+    virtualenv: "{{ golem_source_path }}/venv"
     virtualenv_command: /usr/bin/python3.6 -m venv
 
 - name: pip install requirements
   become: yes
   pip:
-    requirements: "{{ golem_source_path }}/golem_git/requirements.txt"
-    virtualenv: "{{ golem_source_path }}/golem_git/venv"
+    requirements: "{{ golem_source_path }}/requirements.txt"
+    virtualenv: "{{ golem_source_path }}/venv"
     virtualenv_command: /usr/bin/python3.6 -m venv
 
 - name: set version
   become: yes
   command: ./venv/bin/python3 -c "from setup_util.setup_commons import get_version; get_version()"
   args:
-    chdir: "{{ golem_source_path }}/golem_git/"
+    chdir: "{{ golem_source_path }}"
   changed_when: golem_source_dest_git_repo is changed
 
 - name: create directory for golem config
