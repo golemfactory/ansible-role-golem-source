@@ -9,7 +9,7 @@ ExecStart={{ golem_source_path }}/venv/bin/python {{ golem_source_path }}/golema
     -d {{ golem_source_config_dir }} \
     {{ golem_source_mainnet | ternary('--mainnet', '') }} \
     --accept-terms \
-    --password {{ golem_source_password }} \
+    --password "{{ golem_source_password }}" \
     {{ golem_source_unit_extra_args }}
 WorkingDirectory={{ golem_source_path }}/
 Environment="LC_ALL=C.UTF-8"
