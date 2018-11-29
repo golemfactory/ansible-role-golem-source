@@ -106,19 +106,18 @@
   become: yes
   apt:
     update_cache: yes
-    name: "{{ item }}"
-  with_items:
-    - python3.6
-    - python3.6-venv
-    - python3.6-dev
-    - libffi-dev
-    - libssl-dev
-    - virtualenv
-    - build-essential
-    - automake
-    - pkg-config
-    - libtool
-    - libgmp-dev
+    name:
+      - python3.6
+      - python3.6-venv
+      - python3.6-dev
+      - libffi-dev
+      - libssl-dev
+      - virtualenv
+      - build-essential
+      - automake
+      - pkg-config
+      - libtool
+      - libgmp-dev
 
 - name: upgrade pip
   become: yes
@@ -170,12 +169,12 @@
 
 - name: configure golem
   become: yes
-  with_dict: "{{ golem_source_config_default | default({}) | combine(golem_source_config) }}"
   lineinfile:
     path: "{{ golem_source_config_path }}/app_cfg.ini"
     state: present
     regexp: "^{{ item.key }} = "
     line: "{{ item.key }} = {{ item.value }}"
+  loop: "{{ golem_source_config_default | combine(golem_source_config) | dict2items }}"
   notify: restart golem
 
 - name: configure denied nodes

@@ -40,7 +40,7 @@
 
     - name: print a warning
       debug:
-        msg: "If the next step fails, read the comment in tasks/main.yml"
+        msg: "If the next step fails, read the comment in tasks/use_local_clone.yml"
       run_once: yes
 
     # This unfortunately doesn't work. Ansible modifies remote url, so that
