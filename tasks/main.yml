@@ -134,6 +134,30 @@
     virtualenv: "{{ golem_source_path }}/venv"
     virtualenv_command: /usr/bin/python3.6 -m venv
 
+- name: download rustup
+  become: yes
+  get_url:
+    url: "https://sh.rustup.rs"
+    dest: "/tmp/rustup.sh"
+    mode: 0775
+
+- name: run rustup and install rust
+  become: yes
+  command: "/tmp/rustup.sh --default-toolchain stable --default-host x86_64-unknown-linux-gnu -y"
+
+- name: add rust configuration to profile
+  become: yes
+  lineinfile:
+    path: "{{ golem_source_user_home }}/.bashrc"
+    regexp: '^source $HOME/.cargo/env'
+    line: 'source $HOME/.cargo/env'
+
+- name: run python setup.py develop
+  become: yes
+  command: "./venv/bin/python3 setup.py develop"
+  args:
+    chdir: "{{ golem_source_path }}"
+
 - name: set version
   become: yes
   command: ./venv/bin/python3 -c "from setup_util.setup_commons import get_version; get_version()"
