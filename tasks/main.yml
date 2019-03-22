@@ -154,9 +154,10 @@
 
 - name: run python setup.py develop
   become: yes
-  shell: "source /home/username/.bashrc && ./venv/bin/python3 setup.py develop"
-  chdir: "{{ golem_source_path }}"
-  executable: /bin/bash
+  shell: "source {{ golem_source_user_home }}/.bashrc && ./venv/bin/python3 setup.py develop"
+  args:
+    chdir: "{{ golem_source_path }}"
+    executable: /bin/bash
 
 - name: set version
   become: yes
