@@ -149,7 +149,7 @@
   become: yes
   lineinfile:
     path: "{{ golem_source_user_home }}/.bashrc"
-    regexp: '^source $HOME/.cargo/env'
+    regexp: '^source $HOME/\.cargo/env'
     line: 'source $HOME/.cargo/env'
 
 - name: run python setup.py develop
