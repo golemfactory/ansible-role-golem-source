@@ -161,6 +161,14 @@
     regexp: '^source $HOME/\.cargo/env'
     line: 'source $HOME/.cargo/env'
 
+- name: Source the bashrc file
+  become: yes
+  become_user: "{{ golem_source_user }}"
+  shell: "source {{ golem_source_user_home }}/.bashrc"
+  args:
+    chdir: "{{ golem_source_path }}"
+    executable: /bin/bash
+
 - name: run python setup.py develop
   become: yes
   become_user: "{{ golem_source_user }}"
