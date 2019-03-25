@@ -154,7 +154,7 @@
 
 - name: run python setup.py develop
   become: yes
-  shell: "sudo -iu {{ golem_source_user }} {{golem_source_path}}/venv/bin/python3 setup.py develop"
+  shell: "sudo -iu {{ golem_source_user }} {{ golem_source_path }}/venv/bin/python3 {{ golem_source_path }}/setup.py develop"
   args:
     chdir: "{{ golem_source_path }}"
     executable: /bin/bash
