@@ -171,10 +171,8 @@
 
 - name: run python setup.py develop
   become: yes
-  become_user: "{{ golem_source_user }}"
-  shell: "{{ golem_source_path }}/venv/bin/python3 {{ golem_source_path }}/setup.py develop"
+  shell: "sudo -iu {{ golem_source_user }} {{ golem_source_path }}/venv/bin/python3 {{ golem_source_path }}/setup.py develop"
   args:
-    chdir: "{{ golem_source_path }}"
     executable: /bin/bash
 
 - name: set version
