@@ -121,6 +121,7 @@
 
 - name: make sure owner of the directory is golem user
   become: yes
+  warn: false
   command: "chown -R {{ golem_source_user }}: {{ golem_source_user_home }}"
 
 - name: upgrade pip
@@ -172,6 +173,7 @@
 - name: run python setup.py develop
   become: yes
   shell: "sudo -iu {{ golem_source_user }} bash -c \"cd {{ golem_source_path }}; venv/bin/python3 setup.py develop\""
+  warn: false
   args:
     executable: /bin/bash
 
