@@ -132,6 +132,7 @@
     state: latest
     virtualenv: "{{ golem_source_path }}/venv"
     virtualenv_command: /usr/bin/python3.6 -m venv
+  ignore_errors: True
 
 - name: pip install requirements
   become: yes
