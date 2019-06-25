@@ -110,6 +110,7 @@
       - python3.6
       - python3.6-venv
       - python3.6-dev
+      - python3.6-setuptools
       - libffi-dev
       - libssl-dev
       - virtualenv
@@ -125,6 +126,10 @@
     warn: false
   command: "chown -R {{ golem_source_user }}: {{ golem_source_user_home }}"
 
+- name: install pip
+  become: yes
+  shell: 'curl https://bootstrap.pypa.io/get-pip.py | sudo -H python3.6'
+
 - name: upgrade pip
   become: yes
   become_user: "{{ golem_source_user }}"
@@ -133,6 +138,7 @@
     state: latest
     virtualenv: "{{ golem_source_path }}/venv"
     virtualenv_command: /usr/bin/python3.6 -m venv
+    virtualenv_python: /usr/bin/python3.6
   ignore_errors: True
 
 - name: pip install requirements
@@ -142,6 +148,7 @@
     requirements: "{{ golem_source_path }}/requirements.txt"
     virtualenv: "{{ golem_source_path }}/venv"
     virtualenv_command: /usr/bin/python3.6 -m venv
+    virtualenv_python: /usr/bin/python3.6
 
 - name: download rustup
   become: yes
