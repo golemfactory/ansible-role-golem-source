@@ -119,6 +119,7 @@
       - pkg-config
       - libtool
       - libgmp-dev
+  ignore_errors: True
 
 - name: make sure owner of the directory is golem user
   become: yes
