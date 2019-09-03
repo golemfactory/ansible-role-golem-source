@@ -138,7 +138,6 @@
     name: pip
     state: latest
     virtualenv: "{{ golem_source_path }}/venv"
-    virtualenv_command: /usr/bin/python3.6 -m venv
     virtualenv_python: /usr/bin/python3.6
   ignore_errors: True
 
@@ -148,7 +147,6 @@
   pip:
     requirements: "{{ golem_source_path }}/requirements.txt"
     virtualenv: "{{ golem_source_path }}/venv"
-    virtualenv_command: /usr/bin/python3.6 -m venv
     virtualenv_python: /usr/bin/python3.6
 
 - name: download rustup
