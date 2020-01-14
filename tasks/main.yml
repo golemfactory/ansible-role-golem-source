@@ -97,9 +97,14 @@
         keyserver: keyserver.ubuntu.com
         id: 4ab0f789cba31744cc7da76a8cf63ad3f06fc659
 
-    - name: Add python 3.6 repo
+    - name: Remove old python 3.6 repo
       apt_repository:
         repo: "ppa:jonathonf/python-3.6"
+        state: absent
+
+    - name: Add python 3.6 repo
+      apt_repository:
+        repo: "ppa:deadsnakes/ppa"
         update_cache: yes
 
 - name: install dependencies
